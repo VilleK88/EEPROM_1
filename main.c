@@ -30,8 +30,8 @@
 
 #define I2C i2c0
 // I2C pins
-#define I2C_SDA 4 // Serial Data Line
-#define I2C_SCL 5 // Serial Clock Line
+#define I2C_SDA 16 // Serial Data Line
+#define I2C_SCL 17 // Serial Clock Line
 #define I2C_SIZE 2
 
 #define EEPROM_ADDRESS 0x50 // EEPROM I2C address
@@ -178,6 +178,7 @@ void gpio_callback(uint const gpio, uint32_t const event_mask) {
 
         // Detect button press (falling edge)
         if (event_mask & GPIO_IRQ_EDGE_FALL && now - last_ms_l >= DEBOUNCE_MS) {
+            last_ms_l = now;
             const event_t event = { .type = EV_SW_L, .data = 1 };
             queue_try_add(&events, &event); // Add event to queue
             printf("SW_L pressed\r\n");
@@ -252,7 +253,7 @@ void init_leds(const uint *leds) {
 }
 
 uint init_i2c() {
-    const uint baud = i2c_init(i2c0, BAUD_RATE);
+    const uint baud = i2c_init(I2C, BAUD_RATE);
     for (int i = 0; i < I2C_SIZE; i++) {
         gpio_set_function(i2cs[i], GPIO_FUNC_I2C);
         gpio_pull_up(i2cs[i]);
