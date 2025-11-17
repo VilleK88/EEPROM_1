@@ -34,7 +34,7 @@
 #define I2C_SCL 5 // Serial Clock Line
 #define I2C_SIZE 2
 
-#define EEPROM_ADDR 0x50 // EEPROM I2C address
+#define EEPROM_ADDRESS 0x50 // EEPROM I2C address
 
 static const uint i2cs[] = {I2C_SDA, I2C_SCL};
 
@@ -307,7 +307,7 @@ void write_byte(uint16_t const address, uint8_t const value) {
     // Send 3 bytes:
     // - 2 bytes of address
     // - 1 byte of data
-    i2c_write_blocking(I2C, EEPROM_ADDR, buffer, 3, false);
+    i2c_write_blocking(I2C, EEPROM_ADDRESS, buffer, 3, false);
     sleep_ms(5);
 }
 
@@ -318,8 +318,8 @@ uint8_t read_byte(uint16_t const address) {
     buffer[0] = address >> 8 & 0xFF; // MSB
     buffer[1] = address & 0xFF; // LSB
 
-    i2c_write_blocking(I2C, address, buffer, 2,true);
-    i2c_read_blocking(I2C, address, &data, 1, false);
+    i2c_write_blocking(I2C, EEPROM_ADDRESS, buffer, 2,true);
+    i2c_read_blocking(I2C, EEPROM_ADDRESS, &data, 1, false);
 
     return data;
 }
