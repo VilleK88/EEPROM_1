@@ -215,10 +215,6 @@ void init_buttons(const uint *buttons) {
         gpio_set_irq_enabled_with_callback(buttons[i], GPIO_IRQ_EDGE_FALL |
             GPIO_IRQ_EDGE_RISE, true, &gpio_callback);
     }
-
-    // Configure button interrupt and callback
-    /*gpio_set_irq_enabled_with_callback(SW_M, GPIO_IRQ_EDGE_FALL |
-        GPIO_IRQ_EDGE_RISE, true, &gpio_callback);*/
 }
 
 void init_leds(const uint *leds) {
