@@ -24,6 +24,9 @@ add_compile_options(-Wall
 # Tell CMake where to find the executable source file
 add_executable(${PROJECT_NAME} 
     main.c
+        main.h
+        utils/light_states.c
+        utils/light_states.h
 )
 
 # Create map/bin/hex/uf2 files
