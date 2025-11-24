@@ -8,6 +8,21 @@
 #define LIGHT_ON 1
 #define LIGHT_OFF 0
 
+#define LED_L 20 // left LED
+#define LED_M 21 // middle LED
+#define LED_R 22 // right LED
+#define LEDS_SIZE 3 // how many LEDs
+static const uint leds[] = {LED_L, LED_M, LED_R};
+
+#define LED_L_ADDR 551
+#define LED_M_ADDR 553
+#define LED_R_ADDR 555
+static const uint leds_addr[] = {LED_L_ADDR, LED_M_ADDR, LED_R_ADDR};
+
+#define BR_RATE 4 // step size for brightness changes
+#define MAX_BR (TOP + 1) // max brightness
+#define BR_MID (MAX_BR / 2) // 50% brightness level
+
 typedef enum {
     lights_on,
     lights_off
