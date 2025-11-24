@@ -8,8 +8,6 @@
 #include "utils/light_states.h"
 
 #include "pico/stdlib.h"
-#include "hardware/pwm.h"
-#include "hardware/gpio.h"
 #include "hardware/i2c.h"
 #include "pico/util/queue.h"
 

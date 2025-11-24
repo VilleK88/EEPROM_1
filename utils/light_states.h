@@ -3,11 +3,7 @@
 
 #include "../main.h"
 
-#include "pico/stdlib.h"
 #include "hardware/pwm.h"
-#include "hardware/gpio.h"
-#include "hardware/i2c.h"
-#include "pico/util/queue.h"
 
 #define LIGHT_ON 1
 #define LIGHT_OFF 0
