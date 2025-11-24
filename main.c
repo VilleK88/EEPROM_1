@@ -153,28 +153,6 @@ void init_i2c() {
     }
 }
 
-void light_switch(const uint led, const uint16_t addr) {
-    led_state ls;
-    if (!light_on(addr)) {
-        set_led_state(&ls, 1);
-        write_byte(addr, ls.state);
-        write_byte(addr+1, ls.not_state);
-        set_brightness(led, BR_MID);
-    }
-    else {
-        set_led_state(&ls, 0);
-        write_byte(addr, ls.state);
-        write_byte(addr+1, ls.not_state);
-        set_brightness(led, 0);
-    }
-}
-
-void set_brightness(const uint led, const uint brightness) {
-    const uint slice = pwm_gpio_to_slice_num(led);  // Get PWM slice for LED pin
-    const uint chan  = pwm_gpio_to_channel(led); // Get PWM channel (A/B)
-    pwm_set_chan_level(slice, chan, brightness); // Update duty cycle value
-}
-
 uint clamp(const int br) {
     // Limit brightness value to valid PWM range [0, MAX_BR]
     if (br < 0) return 0; // Lower bound

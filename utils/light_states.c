@@ -1,18 +1,5 @@
 #include "light_states.h"
 
-/*void run_light_sm(light_sm *smi) {
-    switch (smi->state) {
-        case lights_on:
-            // do something
-            break;
-        case lights_off:
-            // do something
-            break;
-        default:
-            break;
-    }
-}*/
-
 bool check_if_led_states_are_valid() {
     for (int i = 251; i < 256; i+=2) {
         led_state ls;
@@ -67,4 +54,26 @@ void init_led_state(uint led, uint16_t addr, uint8_t value) {
     else if (value == 0) {
         set_brightness(led, 0);
     }
+}
+
+void light_switch(const uint led, const uint16_t addr) {
+    led_state ls;
+    if (!light_on(addr)) {
+        set_led_state(&ls, 1);
+        write_byte(addr, ls.state);
+        write_byte(addr+1, ls.not_state);
+        set_brightness(led, BR_MID);
+    }
+    else {
+        set_led_state(&ls, 0);
+        write_byte(addr, ls.state);
+        write_byte(addr+1, ls.not_state);
+        set_brightness(led, 0);
+    }
+}
+
+void set_brightness(const uint led, const uint brightness) {
+    const uint slice = pwm_gpio_to_slice_num(led);  // Get PWM slice for LED pin
+    const uint chan  = pwm_gpio_to_channel(led); // Get PWM channel (A/B)
+    pwm_set_chan_level(slice, chan, brightness); // Update duty cycle value
 }
