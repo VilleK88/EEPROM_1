@@ -10,16 +10,16 @@ int main() {
     // Initialize I2C
     init_i2c();
 
-    printf("The number of seconds since power-on: %.2f\r\n", (float)time_us_64() / 1000000);
-
+    printf("The number of seconds since power-on: %.2f.\r\n", (float)time_us_64() / 1000000);
     if (check_if_led_states_are_valid()) {
-        printf("States are correct\r\n");
+        printf("States are correct.\r\n");
         init_led_states(true);
     }
     else {
-        printf("States not correct\r\n");
+        printf("States not correct.\r\n");
         init_led_states(false);
     }
+    print_led_states();
 
     event_t event;
     while (true) {
@@ -180,12 +180,9 @@ void write_byte(uint16_t const address, uint8_t const value) {
 uint8_t read_byte(uint16_t const address) {
     uint8_t buffer[2];
     uint8_t data;
-
     buffer[0] = address >> 8 & 0xFF; // MSB
     buffer[1] = address & 0xFF; // LSB
-
     i2c_write_blocking(I2C, EEPROM_ADDRESS, buffer, 2,true);
     i2c_read_blocking(I2C, EEPROM_ADDRESS, &data, 1, false);
-    //printf("Data: %d\r\n", data);
     return data;
 }

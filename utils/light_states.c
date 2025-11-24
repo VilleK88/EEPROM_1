@@ -28,15 +28,13 @@ bool led_state_is_valid(led_state *ls) {
 
 void init_led_states(const bool valid) {
     if (!valid) {
-        init_led_state(LED_M, 251, LIGHT_ON);
-        for (int i = 1; i < LEDS_SIZE; i++) {
-            init_led_state(leds[i], leds_addr[i], LIGHT_OFF);
-        }
+        init_led_state(LED_L, 251, LIGHT_OFF);
+        init_led_state(LED_M, 253, LIGHT_ON);
+        init_led_state(LED_R, 255, LIGHT_OFF);
     }
     else {
         for (int i = 0; i < LEDS_SIZE; i++) {
             if (light_on(leds_addr[i])) {
-                //light_switch(leds[i], leds_addr[i]);
                 set_brightness(leds[i], BR_MID);
             }
         }
@@ -70,10 +68,29 @@ void light_switch(const uint led, const uint16_t addr) {
         write_byte(addr+1, ls.not_state);
         set_brightness(led, 0);
     }
+    print_led_states();
 }
 
 void set_brightness(const uint led, const uint brightness) {
     const uint slice = pwm_gpio_to_slice_num(led);  // Get PWM slice for LED pin
     const uint chan  = pwm_gpio_to_channel(led); // Get PWM channel (A/B)
     pwm_set_chan_level(slice, chan, brightness); // Update duty cycle value
+}
+
+void print_led_states() {
+    char *char_leds[] = {"Middle", "Left", "Right"};
+    for (int i = 0; i < LEDS_SIZE; i++) {
+        print_led_state(char_leds[i], leds_addr[i]);
+        if (i < LEDS_SIZE-1)
+            printf(", ");
+    }
+    printf(".\r\n");
+}
+
+void print_led_state(char *led, const uint16_t addr) {
+    printf("%s led state: ", led);
+    if (light_on(addr))
+        printf("On");
+    else
+        printf("Off");
 }
