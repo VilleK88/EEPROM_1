@@ -7,55 +7,40 @@ uint init_i2c();
 uint clamp(int br); // returns value between 0 and TOP
 
 int main() {
-    uint brightness = BR_MID; // LEDs brightness value
-
     // Initialize chosen serial port
     stdio_init_all();
     // Initialize buttons
-    init_buttons(buttons);
+    init_buttons();
     // Initialize LED pins
-    uint64_t seconds = init_leds(leds);
+    const uint64_t seconds = init_leds();
 
     // Initialize I2C
-    uint baud = init_i2c();
+    const uint baud = init_i2c();
     printf("I2C ready (actual baud %u)\r\n", baud);
 
-    //write_byte(0, 0xA5);
-    //write_byte(1, 0xBC);
-
-    //uint8_t value_0 = read_byte(0);
-    //uint8_t value_1 = read_byte(1);
-
-    //printf("Read from EEPROM:\r\n");
-    //printf("Address 0: 0x%02X\r\n", value_0);
-    //printf("Address 1: 0x%02X\r\n", value_1);
-
-    if (check_led_states()) {
+    if (check_if_led_states_are_valid()) {
         printf("States are correct\r\n");
+        init_led_states(true);
     }
     else {
         printf("States not correct\r\n");
         printf("The number of seconds since power-on: %llu\r\n", seconds);
-        init_led_states();
+        init_led_states(false);
     }
-
-    //bool lightsOn = false;
 
     event_t event;
     while (true) {
         // Process pending events from the queue
         while (queue_try_remove(&events, &event)) {
 
-            if (event.type == EV_SW_M && event.data == 1) {
-                set_brightness(SW_M, BR_MID);
-            }
+            if (event.type == EV_SW_R && event.data == 1)
+                light_switch(LED_R, LED_R_ADDR);
 
-            if (event.type == EV_SW_R && event.data == 1) {
-                set_brightness(SW_R, BR_MID);
-            }
-            if (event.type == EV_SW_L && event.data == 1) {
-                set_brightness(SW_L, BR_MID);
-            }
+            if (event.type == EV_SW_M && event.data == 1)
+                light_switch(LED_M, LED_M_ADDR);
+
+            if (event.type == EV_SW_L && event.data == 1)
+                light_switch(LED_L, LED_L_ADDR);
         }
 
         sleep_ms(10); // 10 ms delay (0.01 second) to reduce CPU usage
@@ -179,15 +164,18 @@ uint init_i2c() {
     return baud;
 }
 
-void light_switch(uint led, uint16_t addr, uint8_t value) {
+void light_switch(const uint led, const uint16_t addr) {
     led_state ls;
-    set_led_state(&ls, value);
-    write_byte(ls.state, addr);
-    write_byte(ls.not_state, addr+1);
-    if (value == 0xA0) {
+    if (!light_on(addr)) {
+        set_led_state(&ls, 1);
+        write_byte(addr, ls.state);
+        write_byte(addr+1, ls.not_state);
         set_brightness(led, BR_MID);
     }
-    else if (value == 0x5F) {
+    else {
+        set_led_state(&ls, 0);
+        write_byte(addr, ls.state);
+        write_byte(addr+1, ls.not_state);
         set_brightness(led, 0);
     }
 }
@@ -231,6 +219,6 @@ uint8_t read_byte(uint16_t const address) {
 
     i2c_write_blocking(I2C, EEPROM_ADDRESS, buffer, 2,true);
     i2c_read_blocking(I2C, EEPROM_ADDRESS, &data, 1, false);
-
+    printf("Data: %d\r\n", data);
     return data;
 }

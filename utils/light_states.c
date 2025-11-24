@@ -13,7 +13,7 @@
     }
 }*/
 
-bool check_led_states() {
+bool check_if_led_states_are_valid() {
     for (int i = 251; i < 256; i+=2) {
         led_state ls;
         ls.state = read_byte(i);
@@ -22,6 +22,12 @@ bool check_led_states() {
             return false;
     }
     return true;
+}
+
+bool light_on(const uint16_t addr) {
+    if (read_byte(addr) == 1)
+        return true;
+    return false;
 }
 
 void set_led_state(led_state *ls, uint8_t const value) {
@@ -33,8 +39,32 @@ bool led_state_is_valid(led_state *ls) {
     return ls->state == (uint8_t) ~ls->not_state;
 }
 
-void init_led_states() {
-    light_switch(LED_L, 251, LIGHT_OFF);
-    light_switch(LED_M, 253, LIGHT_ON);
-    light_switch(LED_R, 255, LIGHT_OFF);
+void init_led_states(const bool valid) {
+    if (!valid) {
+        init_led_state(LED_M, 251, LIGHT_ON);
+        for (int i = 1; i < LEDS_SIZE; i++) {
+            init_led_state(leds[i], leds_addr[i], LIGHT_OFF);
+        }
+    }
+    else {
+        for (int i = 0; i < LEDS_SIZE; i++) {
+            if (light_on(leds_addr[i])) {
+                //light_switch(leds[i], leds_addr[i]);
+                set_brightness(leds[i], BR_MID);
+            }
+        }
+    }
+}
+
+void init_led_state(uint led, uint16_t addr, uint8_t value) {
+    led_state ls;
+    set_led_state(&ls, value);
+    write_byte(addr, ls.state);
+    write_byte(addr+1, ls.not_state);
+    if (value == 1) {
+        set_brightness(led, BR_MID);
+    }
+    else if (value == 0) {
+        set_brightness(led, 0);
+    }
 }

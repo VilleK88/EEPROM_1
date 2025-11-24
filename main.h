@@ -22,15 +22,16 @@
 #define BUTTONS_SIZE 3 // how many buttons
 static const uint buttons[] = {SW_R, SW_M, SW_L};
 
-#define LED_R 22 // right LED
 #define LED_M 21 // middle LED
 #define LED_L 20 // left LED
+#define LED_R 22 // right LED
 #define LEDS_SIZE 3 // how many LEDs
-static const uint leds[] = {LED_R, LED_M, LED_L};
+static const uint leds[] = {LED_M, LED_L, LED_R};
 
-#define LED_R_ADDR 255
-#define LED_M_ADDR 253
-#define LED_L_ADDR 251
+#define LED_M_ADDR 551
+#define LED_L_ADDR 553
+#define LED_R_ADDR 555
+static const uint leds_addr[] = {LED_M_ADDR, LED_L_ADDR, LED_R_ADDR};
 
 #define BR_RATE 4 // step size for brightness changes
 #define MAX_BR (TOP + 1) // max brightness
@@ -62,7 +63,7 @@ typedef struct {
 // Global event queue used by ISR (Interrupt Service Routine) and main loop
 static queue_t events;
 
-void light_switch(uint led, uint16_t addr, uint8_t value); // Turn lights on/off
+void light_switch(uint led, uint16_t addr); // Turn lights on/off
 void set_brightness(uint led, uint brightness); // Increase/decrease lighting
 void write_byte(uint16_t address, uint8_t value);
 uint8_t read_byte(uint16_t address);
