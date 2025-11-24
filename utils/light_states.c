@@ -85,6 +85,7 @@ void print_led_states() {
             printf(", ");
     }
     printf(".\r\n");
+    printf("The number of seconds since power-on: %.2f.\r\n", (float)time_us_64() / 1000000);
 }
 
 void print_led_state(char *led, const uint16_t addr) {

@@ -10,7 +10,6 @@ int main() {
     // Initialize I2C
     init_i2c();
 
-    printf("The number of seconds since power-on: %.2f.\r\n", (float)time_us_64() / 1000000);
     if (check_if_led_states_are_valid()) {
         printf("States are correct.\r\n");
         init_led_states(true);
