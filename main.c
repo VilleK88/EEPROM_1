@@ -2,7 +2,7 @@
 
 void gpio_callback(uint gpio, uint32_t event_mask);
 void init_buttons(); // Initialize buttons
-uint64_t init_leds(); // Initialize LED pins
+void init_leds(); // Initialize LED pins
 uint init_i2c();
 uint clamp(int br); // returns value between 0 and TOP
 
@@ -12,11 +12,12 @@ int main() {
     // Initialize buttons
     init_buttons();
     // Initialize LED pins
-    const uint64_t seconds = init_leds();
+    init_leds();
 
     // Initialize I2C
     const uint baud = init_i2c();
-    printf("I2C ready (actual baud %u)\r\n", baud);
+    //printf("I2C ready (actual baud %u)\r\n", baud);
+    printf("The number of seconds since power-on: %.2f\r\n", (float)time_us_64() / 1000000);
 
     if (check_if_led_states_are_valid()) {
         printf("States are correct\r\n");
@@ -24,7 +25,6 @@ int main() {
     }
     else {
         printf("States not correct\r\n");
-        printf("The number of seconds since power-on: %llu\r\n", seconds);
         init_led_states(false);
     }
 
@@ -118,7 +118,7 @@ void init_buttons() {
     }
 }
 
-uint64_t init_leds() {
+void init_leds() {
     // Track which PWM slices (0-7) have been initialized
     bool slice_ini[8] = {false};
 
@@ -150,9 +150,6 @@ uint64_t init_leds() {
         // Start PWM
         pwm_set_enabled(slice, true);
     }
-
-    uint64_t us = time_us_64();
-    return us / 1000000.0;
 }
 
 uint init_i2c() {
@@ -219,6 +216,6 @@ uint8_t read_byte(uint16_t const address) {
 
     i2c_write_blocking(I2C, EEPROM_ADDRESS, buffer, 2,true);
     i2c_read_blocking(I2C, EEPROM_ADDRESS, &data, 1, false);
-    printf("Data: %d\r\n", data);
+    //printf("Data: %d\r\n", data);
     return data;
 }
