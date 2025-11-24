@@ -1,11 +1,5 @@
 #include "main.h"
 
-void gpio_callback(uint gpio, uint32_t event_mask);
-void init_buttons(); // Initialize buttons
-void init_leds(); // Initialize LED pins
-uint init_i2c();
-uint clamp(int br); // returns value between 0 and TOP
-
 int main() {
     // Initialize chosen serial port
     stdio_init_all();
@@ -13,10 +7,9 @@ int main() {
     init_buttons();
     // Initialize LED pins
     init_leds();
-
     // Initialize I2C
-    const uint baud = init_i2c();
-    //printf("I2C ready (actual baud %u)\r\n", baud);
+    init_i2c();
+
     printf("The number of seconds since power-on: %.2f\r\n", (float)time_us_64() / 1000000);
 
     if (check_if_led_states_are_valid()) {
@@ -152,13 +145,12 @@ void init_leds() {
     }
 }
 
-uint init_i2c() {
-    const uint baud = i2c_init(I2C, BAUD_RATE);
+void init_i2c() {
+    i2c_init(I2C, BAUD_RATE);
     for (int i = 0; i < I2C_SIZE; i++) {
         gpio_set_function(i2cs[i], GPIO_FUNC_I2C);
         gpio_pull_up(i2cs[i]);
     }
-    return baud;
 }
 
 void light_switch(const uint led, const uint16_t addr) {

@@ -63,8 +63,13 @@ typedef struct {
 // Global event queue used by ISR (Interrupt Service Routine) and main loop
 static queue_t events;
 
+void gpio_callback(uint gpio, uint32_t event_mask);
+void init_buttons(); // Initialize buttons
+void init_leds(); // Initialize LED pins
+void init_i2c();
 void light_switch(uint led, uint16_t addr); // Turn lights on/off
 void set_brightness(uint led, uint brightness); // Increase/decrease lighting
+uint clamp(int br); // returns value between 0 and TOP
 void write_byte(uint16_t address, uint8_t value);
 uint8_t read_byte(uint16_t address);
 
