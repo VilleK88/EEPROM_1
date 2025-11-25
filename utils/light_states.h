@@ -14,9 +14,9 @@
 #define LEDS_SIZE 3 // how many LEDs
 static const uint leds[] = {LED_L, LED_M, LED_R};
 
-#define LED_L_ADDR 551
-#define LED_M_ADDR 553
-#define LED_R_ADDR 555
+#define LED_L_ADDR 32763
+#define LED_M_ADDR 32765
+#define LED_R_ADDR 32767
 static const uint leds_addr[] = {LED_L_ADDR, LED_M_ADDR, LED_R_ADDR};
 
 #define BR_RATE 4 // step size for brightness changes

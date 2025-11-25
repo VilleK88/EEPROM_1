@@ -1,7 +1,7 @@
 #include "light_states.h"
 
 bool check_if_led_states_are_valid() {
-    for (int i = 251; i < 256; i+=2) {
+    for (int i = 32763; i < 32767; i+=2) {
         led_state ls;
         ls.state = read_byte(i);
         ls.not_state = read_byte(i+1);
