@@ -1,7 +1,7 @@
 #include "light_states.h"
 
 bool check_if_led_states_are_valid() {
-    for (int i = 32763; i < 32767; i+=2) {
+    for (int i = LED_L_ADDR; i < LED_R_ADDR; i+=2) {
         led_state ls;
         ls.state = read_byte(i);
         ls.not_state = read_byte(i+1);
@@ -28,9 +28,9 @@ bool led_state_is_valid(led_state *ls) {
 
 void init_led_states(const bool valid) {
     if (!valid) {
-        init_led_state(LED_L, 251, LIGHT_OFF);
-        init_led_state(LED_M, 253, LIGHT_ON);
-        init_led_state(LED_R, 255, LIGHT_OFF);
+        init_led_state(LED_L, LED_L_ADDR, LIGHT_OFF);
+        init_led_state(LED_M, LED_M_ADDR, LIGHT_ON);
+        init_led_state(LED_R, LED_R_ADDR, LIGHT_OFF);
     }
     else {
         for (int i = 0; i < LEDS_SIZE; i++) {
